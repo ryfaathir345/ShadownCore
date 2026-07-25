@@ -61,6 +61,23 @@ namespace WinTweakStudio.Models
         public string Status { get; set; } = "N/A";
     }
 
+    public class FanSensorData
+    {
+        public string Name { get; set; } = "Fan";
+        public double SpeedRpm { get; set; }
+        public double? ControlPercent { get; set; }
+        public string Location { get; set; } = "System";
+        public bool IsHardwareSensor { get; set; }
+
+        public string RpmFormatted => SpeedRpm > 0
+            ? $"{SpeedRpm:F0} RPM"
+            : "Direct EC Locked (Oem Controlled)";
+
+        public string ControlFormatted => ControlPercent.HasValue
+            ? $"{ControlPercent.Value:F0}%"
+            : "Auto (Laptop EC)";
+    }
+
     public class HardwareMetricsSnapshot
     {
         public CpuSensorData Cpu { get; set; } = new();
@@ -68,6 +85,7 @@ namespace WinTweakStudio.Models
         public RamSensorData Ram { get; set; } = new();
         public List<StorageSensorData> StorageDrives { get; set; } = new();
         public BatterySensorData Battery { get; set; } = new();
+        public List<FanSensorData> Fans { get; set; } = new();
 
         public bool IsXmpDisabled { get; set; }
         public string XmpWarningMessage { get; set; } = string.Empty;

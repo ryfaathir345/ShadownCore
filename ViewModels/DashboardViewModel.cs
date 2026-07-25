@@ -117,6 +117,16 @@ namespace WinTweakStudio.ViewModels
         [ObservableProperty]
         private string _batteryWearLevelText = "N/A (Desktop)";
 
+        // Fan Sensors & Cooling
+        [ObservableProperty]
+        private ObservableCollection<FanSensorData> _fanSensors = new();
+
+        [ObservableProperty]
+        private bool _hasFansDetected;
+
+        [ObservableProperty]
+        private string _primaryFanSpeedText = "N/A (Passive Cooling)";
+
         [ObservableProperty]
         private ObservableCollection<DriverInfo> _driverList = new();
 
@@ -323,6 +333,26 @@ namespace WinTweakStudio.ViewModels
                     BatteryStatusText = "Desktop PC (AC Power Direct)";
                     BatteryChargeText = "100% (AC Direct)";
                     BatteryWearLevelText = "N/A (Desktop)";
+                }
+
+                // Fans & Cooling
+                FanSensors.Clear();
+                if (snapshot.Fans.Count > 0)
+                {
+                    HasFansDetected = true;
+                    foreach (var fan in snapshot.Fans)
+                    {
+                        FanSensors.Add(fan);
+                    }
+                    var mainFan = snapshot.Fans.FirstOrDefault(f => f.SpeedRpm > 0) ?? snapshot.Fans.First();
+                    PrimaryFanSpeedText = mainFan.SpeedRpm > 0
+                        ? $"{mainFan.SpeedRpm:F0} RPM ({mainFan.Name})"
+                        : "Vendor EC Protected (Oem Auto)";
+                }
+                else
+                {
+                    HasFansDetected = false;
+                    PrimaryFanSpeedText = "N/A / Uncontrolled";
                 }
             }
             catch (Exception ex)

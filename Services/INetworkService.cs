@@ -14,6 +14,15 @@ namespace WinTweakStudio.Services
         public string DnsServers { get; set; } = "DHCP / Automatic";
     }
 
+    public class ServerInfo
+    {
+        public string DisplayName { get; set; } = string.Empty;
+        public string Region { get; set; } = string.Empty;
+        public string Host { get; set; } = string.Empty;
+        public bool PreferTcp { get; set; }
+        public int TcpPort { get; set; }
+    }
+
     public class GamePingResult
     {
         public string GameName { get; set; } = string.Empty;
@@ -33,6 +42,6 @@ namespace WinTweakStudio.Services
         NetworkAdapterInfo? GetPrimaryAdapterInfo();
         bool IsWindowsHomeEdition();
         Task<List<GamePingResult>> TestGamePingServersAsync();
-        Task<GamePingResult> PingHostAsync(string gameName, string region, string host);
+        Task<GamePingResult> PingHostAsync(ServerInfo server);
     }
 }

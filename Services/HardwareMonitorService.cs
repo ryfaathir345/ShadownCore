@@ -101,6 +101,9 @@ namespace WinTweakStudio.Services
                                 ReadBatteryData(hardware, snapshot.Battery);
                                 break;
                         }
+
+                        // Collect Fan sensors unconditionally from all hardware & sub-hardware nodes
+                        CollectFanSensors(hardware, snapshot.Fans, GetHardwareLocationLabel(hardware));
                     }
 
                     if (snapshot.Gpus.Count == 0)
@@ -113,6 +116,9 @@ namespace WinTweakStudio.Services
                         CheckWmiBattery(snapshot.Battery);
                     }
 
+                    // Check WMI & Thermal estimation if fans are 0 RPM or missing
+                    CheckWmiFans(snapshot);
+
                     CheckWmiRamXmp(snapshot);
                 }
                 catch (Exception ex)
@@ -120,6 +126,7 @@ namespace WinTweakStudio.Services
                     System.Diagnostics.Debug.WriteLine($"Error reading hardware sensors: {ex.Message}");
                     CheckWmiGpus(snapshot.Gpus);
                     CheckWmiBattery(snapshot.Battery);
+                    CheckWmiFans(snapshot);
                     CheckWmiRamXmp(snapshot);
                 }
 
@@ -370,6 +377,160 @@ namespace WinTweakStudio.Services
                     }
                     battery.Status = "Battery Present";
                     break;
+                }
+            }
+            catch { }
+        }
+
+        private string GetHardwareLocationLabel(IHardware hardware)
+        {
+            return hardware.HardwareType switch
+            {
+                HardwareType.Cpu => "CPU",
+                HardwareType.GpuNvidia or HardwareType.GpuAmd or HardwareType.GpuIntel => "GPU",
+                HardwareType.Motherboard or HardwareType.SuperIO => "Motherboard / EC",
+                HardwareType.EmbeddedController => "Embedded Controller (EC)",
+                _ => hardware.HardwareType.ToString()
+            };
+        }
+
+        private void CollectFanSensors(IHardware hardware, List<FanSensorData> fans, string location)
+        {
+            try
+            {
+                var fanSensors = hardware.Sensors.Where(s => s.SensorType == SensorType.Fan).ToList();
+                var controlSensors = hardware.Sensors.Where(s => s.SensorType == SensorType.Control).ToList();
+
+                foreach (var fanSensor in fanSensors)
+                {
+                    double rpm = fanSensor.Value.HasValue ? Math.Round(fanSensor.Value.Value, 0) : 0;
+                    string fanName = string.IsNullOrWhiteSpace(fanSensor.Name) ? $"{location} Fan" : fanSensor.Name;
+
+                    // Match control percent if available
+                    double? ctrlPercent = null;
+                    var matchingCtrl = controlSensors.FirstOrDefault(c => c.Name.Contains(fanSensor.Name, StringComparison.OrdinalIgnoreCase) || c.Index == fanSensor.Index);
+                    if (matchingCtrl?.Value != null)
+                    {
+                        ctrlPercent = Math.Round(matchingCtrl.Value.Value, 0);
+                    }
+
+                    var existing = fans.FirstOrDefault(f => f.Name.Equals(fanName, StringComparison.OrdinalIgnoreCase));
+                    if (existing != null)
+                    {
+                        if (rpm > 0 || existing.SpeedRpm == 0) existing.SpeedRpm = rpm;
+                        if (ctrlPercent.HasValue) existing.ControlPercent = ctrlPercent;
+                    }
+                    else
+                    {
+                        fans.Add(new FanSensorData
+                        {
+                            Name = fanName,
+                            SpeedRpm = rpm,
+                            ControlPercent = ctrlPercent,
+                            Location = location
+                        });
+                    }
+                }
+
+                // Check Control sensors that might be fans (e.g. Fan PWM % without RPM)
+                foreach (var ctrlSensor in controlSensors)
+                {
+                    if (ctrlSensor.Name.Contains("Fan", StringComparison.OrdinalIgnoreCase) || ctrlSensor.Name.Contains("Cooling", StringComparison.OrdinalIgnoreCase))
+                    {
+                        string ctrlName = ctrlSensor.Name;
+                        var existing = fans.FirstOrDefault(f => f.Name.Equals(ctrlName, StringComparison.OrdinalIgnoreCase));
+                        double? percent = ctrlSensor.Value.HasValue ? Math.Round(ctrlSensor.Value.Value, 0) : null;
+
+                        if (existing != null)
+                        {
+                            if (percent.HasValue) existing.ControlPercent = percent;
+                        }
+                        else
+                        {
+                            fans.Add(new FanSensorData
+                            {
+                                Name = ctrlName,
+                                SpeedRpm = 0,
+                                ControlPercent = percent,
+                                Location = location
+                            });
+                        }
+                    }
+                }
+
+                // Check SubHardware (e.g. SuperIO / EC chips under Motherboard)
+                foreach (IHardware subHardware in hardware.SubHardware)
+                {
+                    CollectFanSensors(subHardware, fans, $"{location} (Sub)");
+                }
+            }
+            catch { }
+        }
+
+        private void CheckWmiFans(HardwareMetricsSnapshot snapshot)
+        {
+            var fans = snapshot.Fans;
+            try
+            {
+                // Query standard Win32_Fan
+                using (var searcher = new ManagementObjectSearcher("SELECT Name, DesiredSpeed FROM Win32_Fan"))
+                {
+                    foreach (var obj in searcher.Get())
+                    {
+                        string name = obj["Name"]?.ToString() ?? "System Fan";
+                        double speed = 0;
+                        if (obj["DesiredSpeed"] != null && double.TryParse(obj["DesiredSpeed"].ToString(), out double rpm))
+                        {
+                            speed = rpm;
+                        }
+
+                        if (!fans.Any(f => f.Name.Equals(name, StringComparison.OrdinalIgnoreCase)))
+                        {
+                            fans.Add(new FanSensorData
+                            {
+                                Name = name,
+                                SpeedRpm = speed,
+                                Location = "WMI Fan"
+                            });
+                        }
+                    }
+                }
+
+                // Dual Fan Laptop Fallback: Ensure both CPU Fan and GPU Fan exist
+                bool hasCpuFan = fans.Any(f => f.Name.Contains("CPU", StringComparison.OrdinalIgnoreCase));
+                bool hasGpuFan = fans.Any(f => f.Name.Contains("GPU", StringComparison.OrdinalIgnoreCase));
+
+                if (!hasCpuFan)
+                {
+                    fans.Insert(0, new FanSensorData
+                    {
+                        Name = "CPU Fan",
+                        SpeedRpm = 0,
+                        ControlPercent = null,
+                        Location = "CPU / Laptop EC",
+                        IsHardwareSensor = false
+                    });
+                }
+
+                if (!hasGpuFan)
+                {
+                    fans.Add(new FanSensorData
+                    {
+                        Name = "GPU Fan",
+                        SpeedRpm = 0,
+                        ControlPercent = null,
+                        Location = "dGPU / Laptop EC",
+                        IsHardwareSensor = false
+                    });
+                }
+
+                // Mark whether fan sensor returned exact hardware RPM from physical sensors
+                foreach (var fan in fans)
+                {
+                    if (fan.SpeedRpm > 0)
+                    {
+                        fan.IsHardwareSensor = true;
+                    }
                 }
             }
             catch { }

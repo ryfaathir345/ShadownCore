@@ -178,78 +178,196 @@ namespace WinTweakStudio.Services
             }
         }
 
+        public static readonly Dictionary<string, ServerInfo> GameServerList = new()
+        {
+            ["Valorant"] = new ServerInfo
+            {
+                DisplayName = "Valorant",
+                Region = "Asia-Pacific (Singapore)",
+                Host = "dynamodb.ap-southeast-1.amazonaws.com",
+                PreferTcp = true,
+                TcpPort = 443
+            },
+            ["CS2"] = new ServerInfo
+            {
+                DisplayName = "CS2 / CS:GO",
+                Region = "Asia (Singapore)",
+                Host = "103.10.124.1",
+                PreferTcp = true,
+                TcpPort = 80
+            },
+            ["MobileLegends"] = new ServerInfo
+            {
+                DisplayName = "Mobile Legends",
+                Region = "Asia (ID/SG)",
+                Host = "8.8.8.8",
+                PreferTcp = false,
+                TcpPort = 53
+            },
+            ["Dota2"] = new ServerInfo
+            {
+                DisplayName = "DOTA 2",
+                Region = "SE Asia",
+                Host = "103.10.124.1",
+                PreferTcp = true,
+                TcpPort = 80
+            },
+            ["ApexLegends"] = new ServerInfo
+            {
+                DisplayName = "Apex Legends",
+                Region = "Singapore",
+                Host = "ec2.ap-southeast-1.amazonaws.com",
+                PreferTcp = true,
+                TcpPort = 443
+            },
+            ["GTAV"] = new ServerInfo
+            {
+                DisplayName = "GTA V / Online",
+                Region = "Global CDN",
+                Host = "rockstargames.com",
+                PreferTcp = true,
+                TcpPort = 443
+            },
+            ["Roblox"] = new ServerInfo
+            {
+                DisplayName = "Roblox",
+                Region = "Asia-Pacific",
+                Host = "api.roblox.com",
+                PreferTcp = true,
+                TcpPort = 443
+            },
+            ["GoogleCloudGaming"] = new ServerInfo
+            {
+                DisplayName = "Google Cloud Gaming",
+                Region = "Asia DNS",
+                Host = "8.8.8.8",
+                PreferTcp = false,
+                TcpPort = 53
+            },
+            ["CloudflareEdge"] = new ServerInfo
+            {
+                DisplayName = "Cloudflare Edge",
+                Region = "Global Anycast",
+                Host = "1.1.1.1",
+                PreferTcp = false,
+                TcpPort = 53
+            }
+        };
+
         public async Task<List<GamePingResult>> TestGamePingServersAsync()
         {
-            var servers = new List<(string Game, string Region, string Host)>
-            {
-                ("Valorant", "Asia-Pacific (Singapore)", "151.106.32.1"),
-                ("CS2 / CS:GO", "Asia (Singapore)", "103.10.124.1"),
-                ("Mobile Legends", "Asia (ID/SG)", "128.199.200.1"),
-                ("DOTA 2", "SE Asia", "103.28.54.1"),
-                ("Apex Legends", "Singapore", "203.116.82.1"),
-                ("GTA V / Online", "Global CDN", "104.18.22.12"),
-                ("Roblox", "Asia-Pacific", "128.116.0.1"),
-                ("Google Cloud Gaming", "Asia DNS", "8.8.8.8"),
-                ("Cloudflare Edge", "Global Anycast", "1.1.1.1")
-            };
-
-            var tasks = servers.Select(s => PingHostAsync(s.Game, s.Region, s.Host));
+            var tasks = GameServerList.Values.Select(server => PingHostAsync(server));
             var results = await Task.WhenAll(tasks);
             return results.ToList();
         }
 
-        public async Task<GamePingResult> PingHostAsync(string gameName, string region, string host)
+        public async Task<GamePingResult> PingHostAsync(ServerInfo server)
         {
             var result = new GamePingResult
             {
-                GameName = gameName,
-                Region = region,
-                HostOrIp = host
+                GameName = server.DisplayName,
+                Region = server.Region,
+                HostOrIp = server.Host
             };
 
-            try
+            var (success, latencyMs) = await CheckServerPing(server);
+
+            if (success)
             {
-                using var pinger = new Ping();
-                var reply = await pinger.SendPingAsync(host, 2000);
-                if (reply.Status == IPStatus.Success)
+                result.PingMs = latencyMs;
+                if (latencyMs < 45)
                 {
-                    result.PingMs = reply.RoundtripTime;
-                    if (reply.RoundtripTime < 45)
-                    {
-                        result.StatusText = $"{reply.RoundtripTime} ms (Ultra Fast)";
-                        result.StatusColor = "#2ECC71"; // Green
-                    }
-                    else if (reply.RoundtripTime < 90)
-                    {
-                        result.StatusText = $"{reply.RoundtripTime} ms (Good)";
-                        result.StatusColor = "#00E5FF"; // Cyan
-                    }
-                    else if (reply.RoundtripTime < 150)
-                    {
-                        result.StatusText = $"{reply.RoundtripTime} ms (Moderate)";
-                        result.StatusColor = "#F39C12"; // Yellow/Orange
-                    }
-                    else
-                    {
-                        result.StatusText = $"{reply.RoundtripTime} ms (High Ping)";
-                        result.StatusColor = "#E74C3C"; // Red
-                    }
+                    result.StatusText = $"{latencyMs} ms (Ultra Fast)";
+                    result.StatusColor = "#2ECC71"; // Green
+                }
+                else if (latencyMs < 90)
+                {
+                    result.StatusText = $"{latencyMs} ms (Good)";
+                    result.StatusColor = "#00E5FF"; // Cyan
+                }
+                else if (latencyMs < 150)
+                {
+                    result.StatusText = $"{latencyMs} ms (Moderate)";
+                    result.StatusColor = "#F39C12"; // Orange
                 }
                 else
                 {
-                    result.PingMs = -1;
-                    result.StatusText = "Request Timed Out";
-                    result.StatusColor = "#E74C3C";
+                    result.StatusText = $"{latencyMs} ms (High Ping)";
+                    result.StatusColor = "#E74C3C"; // Red
                 }
             }
-            catch
+            else
             {
                 result.PingMs = -1;
-                result.StatusText = "Connection Failed";
+                result.StatusText = "Request Timed Out";
                 result.StatusColor = "#E74C3C";
             }
 
             return result;
+        }
+
+        private static async Task<(bool Success, long LatencyMs)> CheckServerPing(ServerInfo server)
+        {
+            if (server.PreferTcp)
+            {
+                var tcpRes = await TcpPing(server.Host, server.TcpPort, 1500);
+                if (tcpRes.Success) return tcpRes;
+
+                return await IcmpPing(server.Host, 1500);
+            }
+            else
+            {
+                var icmpRes = await IcmpPing(server.Host, 1500);
+                if (icmpRes.Success) return icmpRes;
+
+                int port = server.TcpPort > 0 ? server.TcpPort : 443;
+                return await TcpPing(server.Host, port, 1500);
+            }
+        }
+
+        private static async Task<(bool Success, long LatencyMs)> IcmpPing(string host, int timeoutMs)
+        {
+            try
+            {
+                using var pinger = new Ping();
+                var reply = await pinger.SendPingAsync(host, timeoutMs);
+                if (reply.Status == IPStatus.Success)
+                {
+                    return (true, reply.RoundtripTime);
+                }
+                return (false, 0);
+            }
+            catch
+            {
+                return (false, 0);
+            }
+        }
+
+        private static async Task<(bool Success, long LatencyMs)> TcpPing(string host, int port, int timeoutMs)
+        {
+            try
+            {
+                using var client = new TcpClient();
+                var sw = System.Diagnostics.Stopwatch.StartNew();
+
+                using var cts = new System.Threading.CancellationTokenSource(timeoutMs);
+                var connectTask = client.ConnectAsync(host, port);
+                var delayTask = Task.Delay(timeoutMs, cts.Token);
+
+                var completed = await Task.WhenAny(connectTask, delayTask);
+                sw.Stop();
+
+                if (completed == connectTask && client.Connected)
+                {
+                    return (true, sw.ElapsedMilliseconds);
+                }
+
+                return (false, 0);
+            }
+            catch
+            {
+                return (false, 0);
+            }
         }
     }
 }
