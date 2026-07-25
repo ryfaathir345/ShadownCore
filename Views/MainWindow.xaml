@@ -5,6 +5,7 @@
         xmlns:views="clr-namespace:WinTweakStudio.Views"
         xmlns:materialIcons="clr-namespace:Material.Icons.WPF;assembly=Material.Icons.WPF"
         Title="WinTweakStudio - Windows 11 Performance Optimizer" 
+        Icon="/Icon/App_Icon.ico"
         Height="780" Width="1200"
         MinHeight="650" MinWidth="1000"
         WindowStartupLocation="CenterScreen"
