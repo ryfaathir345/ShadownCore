@@ -1,0 +1,140 @@
+<UserControl x:Class="WinTweakStudio.Views.SettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:materialIcons="clr-namespace:Material.Icons.WPF;assembly=Material.Icons.WPF"
+             Background="Transparent">
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <Grid Margin="32">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <!-- Header Title -->
+            <StackPanel Grid.Row="0" Margin="0,0,0,24">
+                <TextBlock Text="App Settings &amp; Configuration" Foreground="#F8F9FA" FontSize="24" FontWeight="Bold" />
+                <TextBlock Text="Atur preferensi aplikasi, otomatisasi startup, manajemen database SQLite, dan profil sistem." Foreground="#9CA3AF" FontSize="13" Margin="0,4,0,0"/>
+            </StackPanel>
+
+            <!-- Settings Content Cards -->
+            <StackPanel Grid.Row="1" MaxWidth="900" HorizontalAlignment="Left">
+
+                <!-- 1. General & Behavior Section -->
+                <Border Background="#1E1E30" BorderBrush="#2A2A42" BorderThickness="1" CornerRadius="10" Padding="20" Margin="0,0,0,20">
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
+                            <materialIcons:MaterialIcon Kind="Cog" Width="20" Height="20" Foreground="#00E5FF" Margin="0,0,10,0"/>
+                            <TextBlock Text="Perilaku &amp; Otomatisasi Aplikasi" Foreground="#FFFFFF" FontSize="16" FontWeight="Bold"/>
+                        </StackPanel>
+
+                        <!-- Run on Windows Startup -->
+                        <Grid Margin="0,8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="Jalankan Otomatis saat Windows Startup" Foreground="#F8F9FA" FontSize="14" FontWeight="SemiBold"/>
+                                <TextBlock Text="Mulai WinTweakStudio secara otomatis di latar belakang saat komputer dinyalakan." Foreground="#9CA3AF" FontSize="12" Margin="0,2,0,0"/>
+                            </StackPanel>
+                            <CheckBox Grid.Column="1" IsChecked="{Binding RunOnStartup}" VerticalAlignment="Center"/>
+                        </Grid>
+
+                        <Separator Background="#2A2A42" Margin="0,12"/>
+
+                        <!-- Auto Create Restore Point -->
+                        <Grid Margin="0,8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="Otomatis Buat Restore Point Saat Startup" Foreground="#F8F9FA" FontSize="14" FontWeight="SemiBold"/>
+                                <TextBlock Text="Membuat snapshot baseline SQLite otomatis sebelum menerapkan tweak pertama." Foreground="#9CA3AF" FontSize="12" Margin="0,2,0,0"/>
+                            </StackPanel>
+                            <CheckBox Grid.Column="1" IsChecked="{Binding AutoCreateRestorePoint}" VerticalAlignment="Center"/>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <!-- 2. Database & Backup Section -->
+                <Border Background="#1E1E30" BorderBrush="#2A2A42" BorderThickness="1" CornerRadius="10" Padding="20" Margin="0,0,0,20">
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
+                            <materialIcons:MaterialIcon Kind="Database" Width="20" Height="20" Foreground="#2ECC71" Margin="0,0,10,0"/>
+                            <TextBlock Text="Manajemen Database SQLite &amp; Backup" Foreground="#FFFFFF" FontSize="16" FontWeight="Bold"/>
+                        </StackPanel>
+
+                        <!-- Database Path -->
+                        <Grid Margin="0,8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel>
+                                <TextBlock Text="Lokasi Database SQLite Lokal" Foreground="#F8F9FA" FontSize="14" FontWeight="SemiBold"/>
+                                <Border Background="#141422" BorderBrush="#2A2A42" BorderThickness="1" CornerRadius="6" Padding="10,8" Margin="0,8,0,0">
+                                    <TextBlock Text="{Binding DatabasePath}" Foreground="#00E5FF" FontSize="12.5" FontFamily="Consolas"/>
+                                </Border>
+                            </StackPanel>
+                        </Grid>
+
+                        <Separator Background="#2A2A42" Margin="0,12"/>
+
+                        <!-- Action Buttons -->
+                        <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                            <Button Content="Export History ke JSON" Command="{Binding ExportHistoryJsonCommand}" Style="{StaticResource RevertButtonStyle}" Margin="0,0,12,0" Padding="16,8"/>
+                            <Button Content="Reset Database SQLite" Command="{Binding ResetDatabaseCommand}" Style="{StaticResource ApplyButtonStyle}" Background="#E74C3C" Foreground="#FFFFFF" Padding="16,8"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <!-- 3. About & System Info Section -->
+                <Border Background="#1E1E30" BorderBrush="#2A2A42" BorderThickness="1" CornerRadius="10" Padding="20">
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
+                            <materialIcons:MaterialIcon Kind="Information" Width="20" Height="20" Foreground="#F59E0B" Margin="0,0,10,0"/>
+                            <TextBlock Text="Informasi Aplikasi &amp; Perangkat Sistem" Foreground="#FFFFFF" FontSize="16" FontWeight="Bold"/>
+                        </StackPanel>
+
+                        <!-- System Metadata Grid -->
+                        <UniformGrid Columns="3" Margin="0,4,0,16">
+                            <Border Background="#141422" CornerRadius="8" Padding="14" Margin="0,0,10,0">
+                                <StackPanel>
+                                    <TextBlock Text="Sistem Operasi" Foreground="#9CA3AF" FontSize="11"/>
+                                    <TextBlock Text="{Binding OsVersion}" Foreground="#FFFFFF" FontSize="13" FontWeight="Bold" Margin="0,4,0,0"/>
+                                </StackPanel>
+                            </Border>
+
+                            <Border Background="#141422" CornerRadius="8" Padding="14" Margin="0,0,10,0">
+                                <StackPanel>
+                                    <TextBlock Text="Processor / CPU" Foreground="#9CA3AF" FontSize="11"/>
+                                    <TextBlock Text="{Binding CpuName}" Foreground="#FFFFFF" FontSize="13" FontWeight="Bold" Margin="0,4,0,0"/>
+                                </StackPanel>
+                            </Border>
+
+                            <Border Background="#141422" CornerRadius="8" Padding="14">
+                                <StackPanel>
+                                    <TextBlock Text="Memori Terpasang" Foreground="#9CA3AF" FontSize="11"/>
+                                    <TextBlock Text="{Binding TotalRam}" Foreground="#FFFFFF" FontSize="13" FontWeight="Bold" Margin="0,4,0,0"/>
+                                </StackPanel>
+                            </Border>
+                        </UniformGrid>
+
+                        <Separator Background="#2A2A42" Margin="0,8,0,16"/>
+
+                        <!-- App Meta & Check Updates -->
+                        <Grid>
+                            <StackPanel HorizontalAlignment="Left" VerticalAlignment="Center">
+                                <TextBlock Text="WinTweakStudio v1.0.0 — Windows 11 Performance Optimizer" Foreground="#F8F9FA" FontSize="13" FontWeight="SemiBold"/>
+                                <TextBlock Text="Dikembangkan dengan .NET 8.0 WPF, LibreHardwareMonitor, NVAPI &amp; SQLite Baseline History." Foreground="#9CA3AF" FontSize="11.5" Margin="0,2,0,0"/>
+                            </StackPanel>
+                            <Button HorizontalAlignment="Right" Content="Cek Pembaruan Versi" Command="{Binding CheckUpdatesCommand}" Style="{StaticResource RevertButtonStyle}" Padding="14,8"/>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+            </StackPanel>
+        </Grid>
+    </ScrollViewer>
+</UserControl>

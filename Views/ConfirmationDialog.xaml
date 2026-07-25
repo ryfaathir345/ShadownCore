@@ -1,0 +1,37 @@
+<Window x:Class="WinTweakStudio.Views.ConfirmationDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="System Warning" Height="240" Width="440"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent">
+
+    <Border Background="#1A1A28" BorderBrush="#E74C3C" BorderThickness="1.5" CornerRadius="12">
+        <Grid Margin="24">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <!-- Header -->
+            <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,12">
+                <Border Background="#33E74C3C" Padding="6,2" CornerRadius="4" Margin="0,0,10,0">
+                    <TextBlock Text="ADVANCED TWEAK" Foreground="#E74C3C" FontWeight="Bold" FontSize="11" />
+                </Border>
+                <TextBlock x:Name="TxtTitle" Text="Confirmation Required" Foreground="#FFFFFF" FontWeight="Bold" FontSize="16" VerticalAlignment="Center"/>
+            </StackPanel>
+
+            <!-- Message -->
+            <TextBlock x:Name="TxtMessage" Grid.Row="1" TextWrapping="Wrap" Foreground="#9CA3AF" FontSize="13" LineHeight="18" Margin="0,0,0,16"/>
+
+            <!-- Buttons -->
+            <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Content="Cancel" Click="OnCancelClick" Style="{StaticResource RevertButtonStyle}" Width="90" Margin="0,0,10,0"/>
+                <Button Content="Proceed &amp; Apply" Click="OnConfirmClick" Style="{StaticResource ApplyButtonStyle}" Width="130" Background="#E74C3C" Foreground="#FFFFFF"/>
+            </StackPanel>
+        </Grid>
+    </Border>
+</Window>

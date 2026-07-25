@@ -1,0 +1,66 @@
+<Window x:Class="WinTweakStudio.Views.NagleConfirmationDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Nagle's Algorithm Warning" Height="370" Width="520"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent">
+
+    <Border Background="#1A1A28" BorderBrush="#F39C12" BorderThickness="1.5" CornerRadius="12">
+        <Grid Margin="24">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <!-- Header -->
+            <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,14">
+                <Border Background="#33F39C12" Padding="8,3" CornerRadius="4" Margin="0,0,10,0">
+                    <TextBlock Text="SITUATIONAL TWEAK" Foreground="#F39C12" FontWeight="Bold" FontSize="11" />
+                </Border>
+                <TextBlock Text="Nagle's Algorithm Warning" Foreground="#FFFFFF" FontWeight="Bold" FontSize="16" VerticalAlignment="Center"/>
+            </StackPanel>
+
+            <!-- Warning Text -->
+            <StackPanel Grid.Row="1" Margin="0,0,0,14">
+                <TextBlock TextWrapping="Wrap" Foreground="#F8F9FA" FontSize="13" LineHeight="19" Margin="0,0,0,10">
+                    Tweak ini mematikan pembundelan paket TCP untuk mengurangi latency (ping) sebesar 5-40ms.
+                </TextBlock>
+                <Border Background="#26F39C12" CornerRadius="8" Padding="12">
+                    <StackPanel>
+                        <TextBlock Text="⚠ PROTOCOL COMPATIBILITY:" Foreground="#F39C12" FontWeight="Bold" FontSize="12" Margin="0,0,0,4"/>
+                        <TextBlock Text="• EFEKTIF: Game berbasis TCP (contoh: WoW, FFXIV, MMO)" Foreground="#2ECC71" FontSize="12"/>
+                        <TextBlock Text="• TIDAK BERPENGARUH: Game berbasis UDP (CS2, Valorant, Apex, Fortnite)" Foreground="#E74C3C" FontSize="12" Margin="0,4,0,0"/>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+
+            <!-- Adapter Selector -->
+            <StackPanel Grid.Row="2" Margin="0,0,0,16">
+                <TextBlock Text="Pilih Network Adapter Target:" Foreground="#9CA3AF" FontSize="12" Margin="0,0,0,6"/>
+                <ComboBox x:Name="CmbAdapters" Background="#25253C" Foreground="#FFFFFF" Padding="8,6" FontSize="13"/>
+            </StackPanel>
+
+            <!-- Checkbox & Buttons -->
+            <Grid Grid.Row="3">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <CheckBox x:Name="ChkUnderstand" Content="Saya paham tweak ini situational" 
+                          Foreground="#F8F9FA" FontSize="12.5" VerticalAlignment="Center"
+                          Checked="OnCheckboxChanged" Unchecked="OnCheckboxChanged"/>
+
+                <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button Content="Cancel" Click="OnCancelClick" Style="{StaticResource RevertButtonStyle}" Width="80" Margin="0,0,10,0"/>
+                    <Button x:Name="BtnApply" Content="Proceed &amp; Apply" Click="OnConfirmClick" Style="{StaticResource ApplyButtonStyle}" Width="130" IsEnabled="False"/>
+                </StackPanel>
+            </Grid>
+        </Grid>
+    </Border>
+</Window>

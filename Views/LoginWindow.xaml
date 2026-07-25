@@ -1,0 +1,165 @@
+<Window x:Class="WinTweakStudio.Views.LoginWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:materialIcons="clr-namespace:Material.Icons.WPF;assembly=Material.Icons.WPF"
+        Title="WinTweakStudio - Registration &amp; Activation" 
+        Height="460" Width="680"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent">
+
+    <Border CornerRadius="12" Background="#0F0F18" BorderBrush="#2A2A42" BorderThickness="1.5" Margin="16">
+        <Border.Effect>
+            <DropShadowEffect BlurRadius="25" ShadowDepth="0" Color="#000000" Opacity="0.8" />
+        </Border.Effect>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <!-- Left panel: Welcome / Marketing -->
+                <ColumnDefinition Width="280" />
+                <!-- Right panel: Input fields -->
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <!-- Left Panel (Brand and VIP perks) -->
+            <Border Grid.Column="0" Background="#141422" CornerRadius="11,0,0,11" BorderBrush="#2A2A42" BorderThickness="0,0,1,0">
+                <Grid Margin="24">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <!-- Branding -->
+                    <StackPanel Grid.Row="0" Margin="0,10,0,20">
+                        <Border Width="42" Height="42" CornerRadius="10" Background="#00E5FF" HorizontalAlignment="Left" Margin="0,0,0,12">
+                            <materialIcons:MaterialIcon Kind="LightningBolt" Width="26" Height="26" Foreground="#0F0F18" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <TextBlock Text="SHADOWN CORE" Foreground="#FFFFFF" FontWeight="Bold" FontSize="18" />
+                        <TextBlock Text="WinTweakStudio Suite" Foreground="#9CA3AF" FontSize="11" Margin="0,2,0,0" />
+                    </StackPanel>
+
+                    <!-- VIP Perks List -->
+                    <StackPanel Grid.Row="1" VerticalAlignment="Center">
+                        <TextBlock Text="VIP MEMBER BENEFITS:" Foreground="#00E5FF" FontWeight="Bold" FontSize="10.5" Margin="0,0,0,4"/>
+                        
+                        <StackPanel Orientation="Horizontal" Margin="0,2">
+                            <materialIcons:MaterialIcon Kind="CheckCircleOutline" Width="16" Height="16" Foreground="#00E5FF" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                            <TextBlock Text="FPS Boost Pro Engine (CPU/GPU/RAM)" Foreground="#E5E7EB" FontSize="11" TextWrapping="Wrap" Width="200"/>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" Margin="0,2">
+                            <materialIcons:MaterialIcon Kind="CheckCircleOutline" Width="16" Height="16" Foreground="#00E5FF" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                            <TextBlock Text="Auto RAM Cleaner (Interval 2 Jam)" Foreground="#E5E7EB" FontSize="11" TextWrapping="Wrap" Width="200"/>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" Margin="0,2">
+                            <materialIcons:MaterialIcon Kind="CheckCircleOutline" Width="16" Height="16" Foreground="#00E5FF" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                            <TextBlock Text="Performance Profiles &amp; Game Detect" Foreground="#E5E7EB" FontSize="11" TextWrapping="Wrap" Width="200"/>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" Margin="0,2">
+                            <materialIcons:MaterialIcon Kind="CheckCircleOutline" Width="16" Height="16" Foreground="#00E5FF" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                            <TextBlock Text="Uninstall Bloatware &amp; Advanced Fix" Foreground="#E5E7EB" FontSize="11" TextWrapping="Wrap" Width="200"/>
+                        </StackPanel>
+                    </StackPanel>
+
+                    <!-- Footer Info -->
+                    <TextBlock Grid.Row="2" Text="Request VIP key to owner for activation." Foreground="#6C757D" FontSize="9.5" HorizontalAlignment="Center" TextAlignment="Center"/>
+                </Grid>
+            </Border>
+            
+            <!-- Right Panel (Input Form) -->
+            <Grid Grid.Column="1" Margin="32,24,32,24">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <!-- Header Window Control -->
+                <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top">
+                    <Button x:Name="BtnClose" Content="✕" Width="28" Height="28" Background="Transparent" Foreground="#9CA3AF" BorderThickness="0" Cursor="Hand" Click="BtnClose_Click">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Foreground" Value="#E74C3C" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                </StackPanel>
+
+                <!-- Forms -->
+                <StackPanel Grid.Row="1" VerticalAlignment="Center">
+                    <StackPanel Margin="0,0,0,12">
+                        <TextBlock Text="Welcome to WinTweakStudio" Foreground="#FFFFFF" FontWeight="Bold" FontSize="20"/>
+                        <TextBlock Text="Sign in to customize your performance parameters." Foreground="#9CA3AF" FontSize="12" Margin="0,4,0,16"/>
+                    </StackPanel>
+
+                    <!-- Username field -->
+                    <StackPanel>
+                        <TextBlock Text="Username / Nickname" Foreground="#FFFFFF" FontSize="11.5" FontWeight="SemiBold" Margin="0,0,0,6"/>
+                        <Border CornerRadius="6" Background="#141422" BorderBrush="#2A2A42" BorderThickness="1.5" Height="38">
+                            <Grid Margin="10,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <materialIcons:MaterialIcon Grid.Column="0" Kind="Account" Width="18" Height="18" Foreground="#6C757D" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                                <TextBox x:Name="TxtUsername" Grid.Column="1" Background="Transparent" Foreground="#FFFFFF" BorderThickness="0" VerticalAlignment="Center" FontSize="13" CaretBrush="#00E5FF"/>
+                            </Grid>
+                        </Border>
+                    </StackPanel>
+
+                    <!-- VIP Key field -->
+                    <StackPanel>
+                        <TextBlock Text="VIP Activation Key (Optional)" Foreground="#FFFFFF" FontSize="11.5" FontWeight="SemiBold" Margin="0,0,0,6"/>
+                        <Border CornerRadius="6" Background="#141422" BorderBrush="#2A2A42" BorderThickness="1.5" Height="38">
+                            <Grid Margin="10,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <materialIcons:MaterialIcon Grid.Column="0" Kind="Key" Width="18" Height="18" Foreground="#6C757D" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                                <TextBox x:Name="TxtVipKey" Grid.Column="1" Background="Transparent" Foreground="#FFFFFF" BorderThickness="0" VerticalAlignment="Center" FontSize="13" CaretBrush="#00E5FF"/>
+                            </Grid>
+                        </Border>
+                    </StackPanel>
+
+                    <!-- Status Message Box -->
+                    <TextBlock x:Name="LblStatus" Foreground="#E74C3C" FontSize="11" TextWrapping="Wrap" Visibility="Collapsed" HorizontalAlignment="Center" Margin="0,4"/>
+                </StackPanel>
+
+                <!-- Actions -->
+                <Grid Grid.Row="2" Margin="0,16,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Free Mode -->
+                    <Button x:Name="BtnFree" Grid.Column="0" Content="Start Free" Margin="0,0,8,0" Height="40" Background="#1E1E30" BorderBrush="#2A2A42" BorderThickness="1.5" Foreground="#F8F9FA" FontWeight="Bold" FontSize="12.5" Cursor="Hand" Click="BtnFree_Click">
+                        <Button.Resources>
+                            <Style TargetType="Border">
+                                <Setter Property="CornerRadius" Value="6" />
+                            </Style>
+                        </Button.Resources>
+                    </Button>
+
+                    <!-- VIP Activate -->
+                    <Button x:Name="BtnVip" Grid.Column="1" Content="Activate VIP" Margin="8,0,0,0" Height="40" Background="#00E5FF" Foreground="#0F0F18" FontWeight="Bold" FontSize="12.5" Cursor="Hand" Click="BtnVip_Click">
+                        <Button.Resources>
+                            <Style TargetType="Border">
+                                <Setter Property="CornerRadius" Value="6" />
+                            </Style>
+                        </Button.Resources>
+                    </Button>
+                </Grid>
+            </Grid>
+        </Grid>
+    </Border>
+</Window>

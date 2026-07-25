@@ -1,0 +1,330 @@
+<UserControl x:Class="WinTweakStudio.Views.CategoryView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Background="Transparent">
+
+    <Grid Margin="32">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- Category Title & Search Bar -->
+        <Grid Grid.Row="0" Margin="0,0,0,20">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Column="0">
+                <TextBlock Text="{Binding CategoryTitle}" Foreground="#F8F9FA" FontSize="24" FontWeight="Bold" />
+                <TextBlock Text="Manage and apply system optimizations for this category." Foreground="#9CA3AF" FontSize="13" Margin="0,4,0,0"/>
+            </StackPanel>
+
+            <!-- Search Bar Input Box -->
+            <Border Grid.Column="1" Background="#1E1E30" BorderBrush="#2A2A42" BorderThickness="1" CornerRadius="8" Padding="12,6" Width="260" VerticalAlignment="Center">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="🔍 " Foreground="#9CA3AF" FontSize="12" VerticalAlignment="Center" Grid.Column="0"/>
+                    <TextBox Text="{Binding SearchQuery, UpdateSourceTrigger=PropertyChanged}" Background="Transparent" BorderThickness="0" Foreground="#F8F9FA" FontSize="12.5" VerticalAlignment="Center" Grid.Column="1"/>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+            <StackPanel>
+                <!-- 🏓 GAME SERVER PING MONITOR CARD (Visible only on Network Category) -->
+                <Border Background="#1E1E30" BorderBrush="#00E5FF" BorderThickness="1.5" CornerRadius="12" Padding="20" Margin="0,0,0,24">
+                    <Border.Style>
+                        <Style TargetType="Border">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding CategoryTitle}" Value="Network">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+                    <StackPanel>
+                        <Grid Margin="0,0,0,16">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="🏓 REAL-TIME GAME SERVER PING MONITOR" Foreground="#FFFFFF" FontSize="16" FontWeight="Bold"/>
+                                </StackPanel>
+                                <TextBlock Text="Live latency check ke server utama Valorant, CS2, Mobile Legends, DOTA 2, Apex Legends, &amp; Cloud." Foreground="#9CA3AF" FontSize="12" Margin="0,2,0,0"/>
+                            </StackPanel>
+
+                            <Button Grid.Column="1" Content="🔄 Test Ping Ulang" Command="{Binding RunPingTestCommand}" Style="{StaticResource RevertButtonStyle}" Padding="12,6"/>
+                        </Grid>
+
+                        <ItemsControl ItemsSource="{Binding GamePingResults}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <UniformGrid Columns="3"/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Background="#141422" BorderBrush="#25253C" BorderThickness="1" CornerRadius="8" Padding="12,10" Margin="4">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+
+                                            <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                                                <TextBlock Text="{Binding GameName}" Foreground="#F8F9FA" FontSize="13" FontWeight="Bold"/>
+                                                <TextBlock Text="{Binding Region}" Foreground="#6C757D" FontSize="10.5"/>
+                                            </StackPanel>
+
+                                            <Border Grid.Column="1" Background="#1AFFFFFF" Padding="8,3" CornerRadius="4" VerticalAlignment="Center">
+                                                <TextBlock Text="{Binding StatusText}" Foreground="{Binding StatusColor}" FontSize="11" FontWeight="Bold"/>
+                                            </Border>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </Border>
+            <ItemsControl ItemsSource="{Binding TweakGroups}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Expander IsExpanded="{Binding IsExpanded, Mode=TwoWay}" IsEnabled="{Binding IsEnabled}">
+                            <Expander.Style>
+                                <Style TargetType="Expander" BasedOn="{StaticResource ModernExpanderStyle}">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsSecurityGroup}" Value="True">
+                                            <Setter Property="BorderBrush" Value="#EF4444" />
+                                            <Setter Property="BorderThickness" Value="1.5" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Expander.Style>
+                            <Expander.Header>
+                                <Grid Margin="0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <!-- Vendor Badge / Icon -->
+                                    <Border Grid.Column="0" 
+                                            Background="{Binding VendorBrush}" 
+                                            CornerRadius="6" 
+                                            Padding="10,4" 
+                                            Margin="0,0,12,0" 
+                                            VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding Name}" Foreground="#FFFFFF" FontSize="11.5" FontWeight="Bold" />
+                                    </Border>
+
+                                    <!-- Group Title, Subtitle & Warning Tag -->
+                                    <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding Name}" Foreground="#F8F9FA" FontSize="15.5" FontWeight="SemiBold" />
+                                        <TextBlock Text=" Optimizations" Foreground="#9CA3AF" FontSize="14.5" Margin="4,0,0,0"/>
+
+                                        <!-- Undetected Vendor Subtitle -->
+                                        <TextBlock Text="{Binding SubtitleTag}" Foreground="#6C757D" FontSize="13" Margin="8,0,0,0" VerticalAlignment="Center" FontWeight="Normal"/>
+
+                                        <!-- Trade-off Keamanan Badge -->
+
+                                        <!-- Trade-off Keamanan Badge -->
+                                        <Border Padding="8,3" CornerRadius="4" Background="#26EF4444" Margin="12,0,0,0" VerticalAlignment="Center">
+                                            <Border.Style>
+                                                <Style TargetType="Border">
+                                                    <Setter Property="Visibility" Value="Collapsed" />
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsSecurityGroup}" Value="True">
+                                                            <Setter Property="Visibility" Value="Visible" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Border.Style>
+                                            <TextBlock Text="⚠ Trade-off Keamanan" Foreground="#EF4444" FontSize="11" FontWeight="Bold" />
+                                        </Border>
+                                    </StackPanel>
+
+                                    <!-- Count Badge -->
+                                    <Border Grid.Column="2" 
+                                            Background="#1AFFFFFF" 
+                                            CornerRadius="12" 
+                                            Padding="10,4" 
+                                            Margin="0,0,8,0" 
+                                            VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding CountBadge}" Foreground="#9CA3AF" FontSize="11.5" FontWeight="SemiBold" />
+                                    </Border>
+                                </Grid>
+                            </Expander.Header>
+
+                            <Expander.Content>
+                                <ItemsControl ItemsSource="{Binding Tweaks}" Margin="0,8,0,0">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Border Style="{StaticResource TweakCardStyle}">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*" />
+                                                        <ColumnDefinition Width="Auto" />
+                                                    </Grid.ColumnDefinitions>
+
+                                                    <!-- Left Content -->
+                                                    <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                                                        <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
+                                                            <!-- Risk Badge -->
+                                                            <Border Padding="8,3" CornerRadius="4" Margin="0,0,10,0">
+                                                                <Border.Style>
+                                                                    <Style TargetType="Border">
+                                                                        <Setter Property="Background" Value="#25253C" />
+                                                                        <Style.Triggers>
+                                                                            <DataTrigger Binding="{Binding RiskLevel}" Value="Safe">
+                                                                                <Setter Property="Background" Value="#262ECC71" />
+                                                                            </DataTrigger>
+                                                                            <DataTrigger Binding="{Binding RiskLevel}" Value="Moderate">
+                                                                                <Setter Property="Background" Value="#26F39C12" />
+                                                                            </DataTrigger>
+                                                                            <DataTrigger Binding="{Binding RiskLevel}" Value="Advanced">
+                                                                                <Setter Property="Background" Value="#26E74C3C" />
+                                                                            </DataTrigger>
+                                                                        </Style.Triggers>
+                                                                    </Style>
+                                                                </Border.Style>
+                                                                <TextBlock Text="{Binding RiskLevel}" FontSize="11" FontWeight="Bold">
+                                                                    <TextBlock.Style>
+                                                                        <Style TargetType="TextBlock">
+                                                                            <Setter Property="Foreground" Value="#9CA3AF" />
+                                                                            <Style.Triggers>
+                                                                                <DataTrigger Binding="{Binding RiskLevel}" Value="Safe">
+                                                                                    <Setter Property="Foreground" Value="#2ECC71" />
+                                                                                </DataTrigger>
+                                                                                <DataTrigger Binding="{Binding RiskLevel}" Value="Moderate">
+                                                                                    <Setter Property="Foreground" Value="#F39C12" />
+                                                                                </DataTrigger>
+                                                                                <DataTrigger Binding="{Binding RiskLevel}" Value="Advanced">
+                                                                                    <Setter Property="Foreground" Value="#E74C3C" />
+                                                                                </DataTrigger>
+                                                                            </Style.Triggers>
+                                                                        </Style>
+                                                                    </TextBlock.Style>
+                                                                </TextBlock>
+                                                            </Border>
+
+                                                            <!-- Status Indicator -->
+                                                            <Border Padding="8,3" CornerRadius="4">
+                                                                <Border.Style>
+                                                                    <Style TargetType="Border">
+                                                                        <Setter Property="Background" Value="#1AFFFFFF" />
+                                                                        <Style.Triggers>
+                                                                            <DataTrigger Binding="{Binding IsApplied}" Value="True">
+                                                                                <Setter Property="Background" Value="#2600E5FF" />
+                                                                            </DataTrigger>
+                                                                            <DataTrigger Binding="{Binding Type}" Value="Guidance">
+                                                                                <Setter Property="Background" Value="#26F59E0B" />
+                                                                            </DataTrigger>
+                                                                        </Style.Triggers>
+                                                                    </Style>
+                                                                </Border.Style>
+                                                                <TextBlock FontSize="11" FontWeight="SemiBold">
+                                                                    <TextBlock.Style>
+                                                                        <Style TargetType="TextBlock">
+                                                                            <Setter Property="Text" Value="Not Applied" />
+                                                                            <Setter Property="Foreground" Value="#6C757D" />
+                                                                            <Style.Triggers>
+                                                                                <DataTrigger Binding="{Binding IsApplied}" Value="True">
+                                                                                    <Setter Property="Text" Value="Applied" />
+                                                                                    <Setter Property="Foreground" Value="#00E5FF" />
+                                                                                </DataTrigger>
+                                                                                <DataTrigger Binding="{Binding Type}" Value="Guidance">
+                                                                                    <Setter Property="Text" Value="Manual Setup" />
+                                                                                    <Setter Property="Foreground" Value="#F59E0B" />
+                                                                                </DataTrigger>
+                                                                            </Style.Triggers>
+                                                                        </Style>
+                                                                    </TextBlock.Style>
+                                                                </TextBlock>
+                                                            </Border>
+                                                            <!-- Guidance / Manual Setup Badge -->
+                                                            <Border Padding="8,3" CornerRadius="4" Margin="6,0,0,0">
+                                                                <Border.Style>
+                                                                    <Style TargetType="Border">
+                                                                        <Setter Property="Visibility" Value="Collapsed" />
+                                                                        <Setter Property="Background" Value="#26F59E0B" />
+                                                                        <Style.Triggers>
+                                                                            <DataTrigger Binding="{Binding Type}" Value="Guidance">
+                                                                                <Setter Property="Visibility" Value="Visible" />
+                                                                            </DataTrigger>
+                                                                        </Style.Triggers>
+                                                                    </Style>
+                                                                </Border.Style>
+                                                                <TextBlock Text="⚠ Perlu BIOS / Akses Manual" Foreground="#F59E0B" FontSize="11" FontWeight="Bold" />
+                                                            </Border>
+                                                        </StackPanel>
+
+                                                        <!-- Tweak Name & Description -->
+                                                        <TextBlock Text="{Binding Name}" Foreground="#F8F9FA" FontSize="15" FontWeight="SemiBold" Margin="0,2,0,4"/>
+                                                        <TextBlock Text="{Binding Description}" Foreground="#9CA3AF" FontSize="12.5" TextWrapping="Wrap" Margin="0,0,16,0"/>
+                                                    </StackPanel>
+
+                                                    <!-- Right Actions -->
+                                                    <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                                                        <!-- Apply / Instruction Button -->
+                                                        <Button Command="{Binding DataContext.ApplyTweakCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" 
+                                                                CommandParameter="{Binding}"
+                                                                Margin="0,0,8,0">
+                                                            <Button.Style>
+                                                                <Style TargetType="Button" BasedOn="{StaticResource ApplyButtonStyle}">
+                                                                    <Setter Property="Content" Value="Apply" />
+                                                                    <Style.Triggers>
+                                                                        <DataTrigger Binding="{Binding IsApplied}" Value="True">
+                                                                            <Setter Property="IsEnabled" Value="False" />
+                                                                        </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding Type}" Value="Guidance">
+                                                                            <Setter Property="Content" Value="Lihat Instruksi" />
+                                                                            <Setter Property="IsEnabled" Value="True" />
+                                                                        </DataTrigger>
+                                                                    </Style.Triggers>
+                                                                </Style>
+                                                            </Button.Style>
+                                                        </Button>
+
+                                                        <!-- Revert Button -->
+                                                        <Button Content="Revert" 
+                                                                Command="{Binding DataContext.RevertTweakCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" 
+                                                                CommandParameter="{Binding}">
+                                                            <Button.Style>
+                                                                <Style TargetType="Button" BasedOn="{StaticResource RevertButtonStyle}">
+                                                                    <Setter Property="Visibility" Value="Visible" />
+                                                                    <Style.Triggers>
+                                                                        <DataTrigger Binding="{Binding IsApplied}" Value="False">
+                                                                            <Setter Property="IsEnabled" Value="False" />
+                                                                        </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding Type}" Value="Guidance">
+                                                                            <Setter Property="Visibility" Value="Collapsed" />
+                                                                        </DataTrigger>
+                                                                    </Style.Triggers>
+                                                                </Style>
+                                                            </Button.Style>
+                                                        </Button>
+                                                    </StackPanel>
+                                                </Grid>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </Expander.Content>
+                        </Expander>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

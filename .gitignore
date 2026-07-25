@@ -1,0 +1,71 @@
+
+# ============================================================
+#  WinTweakStudio — .gitignore
+#  WPF / .NET 8 / Visual Studio project
+# ============================================================
+
+# ─── Build Output ───────────────────────────────────────────
+bin/
+obj/
+
+# ─── Visual Studio Files ────────────────────────────────────
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.rsuser
+
+# ─── NuGet ──────────────────────────────────────────────────
+*.nupkg
+*.snupkg
+project.lock.json
+project.fragment.lock.json
+artifacts/
+packages/
+# Keep nuget.config if you have custom sources
+# !nuget.config
+
+# ─── Rider / JetBrains ──────────────────────────────────────
+.idea/
+*.sln.iml
+
+# ─── OS Files ───────────────────────────────────────────────
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+.DS_Store
+
+# ─── SENSITIVE / RUNTIME DATA ───────────────────────────────
+# File lisensi user (berisi username + key ter-encode Base64)
+license.dat
+
+# Database SQLite runtime (dibuat otomatis saat app berjalan)
+*.db
+*.db-shm
+*.db-wal
+app_data.db
+
+# Log files
+*.log
+
+# ─── Publish Output ─────────────────────────────────────────
+publish/
+PublishProfiles/
+
+# ─── Test Results ───────────────────────────────────────────
+TestResults/
+*.trx
+*.coverage
+*.coveragexml
+
+# ─── Crash / Dump Files ─────────────────────────────────────
+*.dmp
+*.mdmp
+
+# ─── Temporary Files ────────────────────────────────────────
+*.tmp
+*.temp
+~$*

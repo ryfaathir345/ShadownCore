@@ -1,0 +1,58 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Backgrounds -->
+    <Color x:Key="WindowBackgroundColor">#0F0F18</Color>
+    <SolidColorBrush x:Key="WindowBackgroundBrush" Color="{StaticResource WindowBackgroundColor}" />
+
+    <Color x:Key="SidebarBackgroundColor">#141422</Color>
+    <SolidColorBrush x:Key="SidebarBackgroundBrush" Color="{StaticResource SidebarBackgroundColor}" />
+
+    <Color x:Key="CardBackgroundColor">#1E1E30</Color>
+    <SolidColorBrush x:Key="CardBackgroundBrush" Color="{StaticResource CardBackgroundColor}" />
+
+    <Color x:Key="CardHoverColor">#282840</Color>
+    <SolidColorBrush x:Key="CardHoverBrush" Color="{StaticResource CardHoverColor}" />
+
+    <!-- Accents -->
+    <Color x:Key="PrimaryAccentColor">#00E5FF</Color>
+    <SolidColorBrush x:Key="PrimaryAccentBrush" Color="{StaticResource PrimaryAccentColor}" />
+
+    <Color x:Key="PrimaryAccentDarkColor">#0099B8</Color>
+    <SolidColorBrush x:Key="PrimaryAccentDarkBrush" Color="{StaticResource PrimaryAccentDarkColor}" />
+
+    <!-- Text Colors -->
+    <Color x:Key="PrimaryTextColor">#F8F9FA</Color>
+    <SolidColorBrush x:Key="PrimaryTextBrush" Color="{StaticResource PrimaryTextColor}" />
+
+    <Color x:Key="SecondaryTextColor">#9CA3AF</Color>
+    <SolidColorBrush x:Key="SecondaryTextBrush" Color="{StaticResource SecondaryTextColor}" />
+
+    <Color x:Key="MutedTextColor">#6C757D</Color>
+    <SolidColorBrush x:Key="MutedTextBrush" Color="{StaticResource MutedTextColor}" />
+
+    <!-- Borders -->
+    <Color x:Key="CardBorderColor">#2A2A42</Color>
+    <SolidColorBrush x:Key="CardBorderBrush" Color="{StaticResource CardBorderColor}" />
+
+    <Color x:Key="ActiveBorderColor">#00E5FF</Color>
+    <SolidColorBrush x:Key="ActiveBorderBrush" Color="{StaticResource ActiveBorderColor}" />
+
+    <!-- Risk Badge Colors -->
+    <Color x:Key="SafeRiskColor">#2ECC71</Color>
+    <SolidColorBrush x:Key="SafeRiskBrush" Color="{StaticResource SafeRiskColor}" />
+
+    <Color x:Key="ModerateRiskColor">#F39C12</Color>
+    <SolidColorBrush x:Key="ModerateRiskBrush" Color="{StaticResource ModerateRiskColor}" />
+
+    <Color x:Key="AdvancedRiskColor">#E74C3C</Color>
+    <SolidColorBrush x:Key="AdvancedRiskBrush" Color="{StaticResource AdvancedRiskColor}" />
+
+    <!-- Status Colors -->
+    <Color x:Key="StatusAppliedColor">#00E5FF</Color>
+    <SolidColorBrush x:Key="StatusAppliedBrush" Color="{StaticResource StatusAppliedColor}" />
+
+    <Color x:Key="StatusDefaultColor">#6C757D</Color>
+    <SolidColorBrush x:Key="StatusDefaultBrush" Color="{StaticResource StatusDefaultColor}" />
+
+</ResourceDictionary>
