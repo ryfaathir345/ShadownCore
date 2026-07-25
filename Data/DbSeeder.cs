@@ -1671,6 +1671,148 @@ namespace WinTweakStudio.Data
                     ValueName = "Enabled",
                     DefaultValue = "1",
                     RecommendedValue = "0"
+                },
+
+                // === Windows / Display / Input / System / Gaming / AI Tweaks Baru 2026 ===
+                new TweakDefinition
+                {
+                    Id = "DSP-SHA-01",
+                    Name = "Variable Refresh Rate (VRR) Global Enabler",
+                    Description = "Mengaktifkan dukungan Variable Refresh Rate (G-Sync/FreeSync) bawaan Windows untuk mengurangi tearing layar tanpa memicu V-Sync lag.",
+                    Category = TweakCategory.Windows,
+                    SubCategory = "UI & Performance",
+                    RiskLevel = RiskLevel.Safe,
+                    Type = TweakType.Registry,
+                    TargetPath = @"HKCU\Control Panel\GraphicsDrivers",
+                    ValueName = "VarRefreshRate",
+                    DefaultValue = "0",
+                    RecommendedValue = "1"
+                },
+                new TweakDefinition
+                {
+                    Id = "DSP-SHA-02",
+                    Name = "HDR Auto Calibration & Latency Mode",
+                    Description = "Mengoptimalkan pipeline pemrosesan warna High Dynamic Range (HDR) Windows agar tidak menambah input delay pada monitor gaming.",
+                    Category = TweakCategory.Windows,
+                    SubCategory = "UI & Performance",
+                    RiskLevel = RiskLevel.Safe,
+                    Type = TweakType.Registry,
+                    TargetPath = @"HKCU\Software\Microsoft\Windows\CurrentVersion\VideoSettings",
+                    ValueName = "EnableHDRLatencyOptimization",
+                    DefaultValue = "0",
+                    RecommendedValue = "1"
+                },
+                new TweakDefinition
+                {
+                    Id = "INP-SHA-01",
+                    Name = "USB Mouse & Keyboard Polling Rate Driver Optimization",
+                    Description = "Menonaktifkan pembatasan frekuensi sampel USB (polling rate) Windows untuk memastikan periferal 1000Hz/4000Hz/8000Hz berjalan optimal.",
+                    Category = TweakCategory.Windows,
+                    SubCategory = "Gaming & Overlay",
+                    RiskLevel = RiskLevel.Safe,
+                    Type = TweakType.Registry,
+                    TargetPath = @"HKLM\SYSTEM\CurrentControlSet\Services\mouclass\Parameters",
+                    ValueName = "MouseDataQueueSize",
+                    DefaultValue = "100",
+                    RecommendedValue = "30"
+                },
+                new TweakDefinition
+                {
+                    Id = "INP-SHA-02",
+                    Name = "HID Input Latency Buffer Reduction",
+                    Description = "Mengurangi ukuran antrian buffer Human Interface Device (HID) untuk merespon klik mouse dan penekanan tombol keyboard secara langsung.",
+                    Category = TweakCategory.Windows,
+                    SubCategory = "Gaming & Overlay",
+                    RiskLevel = RiskLevel.Safe,
+                    Type = TweakType.Registry,
+                    TargetPath = @"HKLM\SYSTEM\CurrentControlSet\Services\kbdclass\Parameters",
+                    ValueName = "KeyboardDataQueueSize",
+                    DefaultValue = "100",
+                    RecommendedValue = "30"
+                },
+                new TweakDefinition
+                {
+                    Id = "SYS-SHA-01",
+                    Name = "Disable Diagnostic Tracking Service (DiagTrack) Override",
+                    Description = "Mematikan paksa pengumpulan logs diagnosa sistem otomatis yang berjalan latar belakang saat game aktif.",
+                    Category = TweakCategory.Windows,
+                    SubCategory = "AI & Telemetry",
+                    RiskLevel = RiskLevel.Safe,
+                    Type = TweakType.Service,
+                    TargetPath = "DiagTrack",
+                    ValueName = "Start",
+                    DefaultValue = "2",
+                    RecommendedValue = "4"
+                },
+                new TweakDefinition
+                {
+                    Id = "SYS-SHA-02",
+                    Name = "Disable Windows Event Log Overhead",
+                    Description = "Menurunkan verbositas penulisan event log non-kritis ke disk saat sistem dalam performa gaming.",
+                    Category = TweakCategory.Windows,
+                    SubCategory = "System Diagnostics",
+                    RiskLevel = RiskLevel.Moderate,
+                    Type = TweakType.Registry,
+                    TargetPath = @"HKLM\SYSTEM\CurrentControlSet\Control\WMI\Autologger\EventLog-System",
+                    ValueName = "Start",
+                    DefaultValue = "1",
+                    RecommendedValue = "0"
+                },
+                new TweakDefinition
+                {
+                    Id = "GAM-SHA-01",
+                    Name = "Game Execution High-Priority Override",
+                    Description = "Secara otomatis menetapkan prioritas CPU High (CpuPriorityClass = 3) pada executable game yang terdaftar.",
+                    Category = TweakCategory.Windows,
+                    SubCategory = "Gaming & Overlay",
+                    RiskLevel = RiskLevel.Safe,
+                    Type = TweakType.Registry,
+                    TargetPath = @"HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\valorant-win64-shipping.exe\PerfOptions",
+                    ValueName = "CpuPriorityClass",
+                    DefaultValue = "2",
+                    RecommendedValue = "3"
+                },
+                new TweakDefinition
+                {
+                    Id = "GAM-SHA-02",
+                    Name = "Frametime Spike Protection (MMCSS High Priority)",
+                    Description = "Memaksa Multimedia Class Scheduler Service (MMCSS) mengalokasikan 95% thread CPU untuk frametime game yang lebih mulus.",
+                    Category = TweakCategory.Windows,
+                    SubCategory = "Gaming & Overlay",
+                    RiskLevel = RiskLevel.Safe,
+                    Type = TweakType.Registry,
+                    TargetPath = @"HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Games",
+                    ValueName = "Priority",
+                    DefaultValue = "2",
+                    RecommendedValue = "6"
+                },
+                new TweakDefinition
+                {
+                    Id = "AI-SHA-01",
+                    Name = "Smart Hardware Risk Score Analyzer Guidance",
+                    Description = "Modul kecerdasan bawaan yang secara dinamis menghitung Risk Score sistem dan merekomendasikan tweak paling aman sesuai komponen PC Anda.",
+                    Category = TweakCategory.Windows,
+                    SubCategory = "AI & Telemetry",
+                    RiskLevel = RiskLevel.Safe,
+                    Type = TweakType.Guidance,
+                    TargetPath = "-",
+                    ValueName = "-",
+                    DefaultValue = "-",
+                    RecommendedValue = "-"
+                },
+                new TweakDefinition
+                {
+                    Id = "AI-SHA-02",
+                    Name = "Auto-Profile Adaptation Engine Guidance",
+                    Description = "Panduan pengaktifan skenario profil performa otomatis berdasar pendeteksian aplikasi aktif (Gaming, Streaming, Work, Battery).",
+                    Category = TweakCategory.Windows,
+                    SubCategory = "AI & Telemetry",
+                    RiskLevel = RiskLevel.Safe,
+                    Type = TweakType.Guidance,
+                    TargetPath = "-",
+                    ValueName = "-",
+                    DefaultValue = "-",
+                    RecommendedValue = "-"
                 }
             };
         }

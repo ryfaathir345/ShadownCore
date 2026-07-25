@@ -301,16 +301,16 @@ Lihat dokumen lengkap: [`Docs/WinTweakStudio_UpdateRoadmap.md`](Docs/WinTweakStu
 | 🟡 P2 | Driver Scanner | ✅ Done |
 | 🟢 P3 | Auto Game Detection | ✅ Done |
 | 🟢 P3 | Hardware Monitor Dashboard | ✅ Done |
-| 🔵 P4 | 52 Tweak Baru (GPU/CPU/Storage/RAM/Network) | 🔄 In Progress |
-| 🔵 P4 | AI Recommendation Engine | 📋 Planned |
+| 🔵 P4 | 52 Tweak Baru (GPU/CPU/Storage/RAM/Network) | ✅ Done |
+| 🔵 P4 | AI Recommendation Engine | ✅ Done |
 | 🔵 P4 | Process Manager | 📋 Planned |
 | 🔵 P4 | Auto Start Manager | 📋 Planned |
-| 🔵 P4 | DirectStorage & VRR Checker | 📋 Planned |
+| 🔵 P4 | DirectStorage & VRR Checker | ✅ Done |
 
 ### Target Tweak
 | Kondisi | Jumlah Tweak | Fitur |
 |:--------|:-----------:|:-----:|
-| ⚠️ Saat ini | 131 tweak | 10+ fitur |
+| ⚠️ Saat ini | 183+ tweak | 20+ fitur |
 | 🏆 Target | **183+ tweak** | **20+ fitur** |
 
 ---
