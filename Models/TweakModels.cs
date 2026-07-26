@@ -54,6 +54,26 @@ namespace WinTweakStudio.Models
         private bool _isApplied;
 
         public bool RequiresSecurityWarning { get; set; }
+
+        public bool IsVipExclusive
+        {
+            get
+            {
+                if (RiskLevel != RiskLevel.Safe) return true;
+
+                string[] freeSubCats = {
+                    "General", "UI & Performance", "Power Plan", "AI & Telemetry",
+                    "UWP Apps Debloat", "Background Apps", "System Apps & Sync",
+                    "Cleanup & Maintenance", "Telemetry & Diagnostics", "Background",
+                    "Startup Apps & Health", "Services", "Debloat Guidance",
+                    "NTFS File System", "Monitoring", "Adapter Settings",
+                    "System & Hardware Services", "Security & Pagefile", "Security",
+                    "System Services & Power", "System Diagnostics"
+                };
+
+                return !System.Array.Exists(freeSubCats, cat => string.Equals(cat, SubCategory, System.StringComparison.OrdinalIgnoreCase));
+            }
+        }
     }
 
     public class TweakLog

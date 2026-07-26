@@ -14,7 +14,7 @@ SetupIconFile=d:\MyProject\WinTweakStudio\Icon\App_Icon.ico
 UninstallDisplayIcon={app}\WinTweakStudio.exe
 Compression=lzma2/ultra64
 SolidCompression=yes
-OutputDir=.\InstallerOutput
+OutputDir=.\Installer
 OutputBaseFilename=WinTweakStudio_Setup_v1.0
 PrivilegesRequired=admin
 
@@ -28,8 +28,8 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 Source: "d:\MyProject\WinTweakStudio\bin\Release\net8.0-windows\win-x64\publish\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 
 [Icons]
-Name: "{group}\WinTweakStudio"; Filename: "{app}\WinTweakStudio.exe"
-Name: "{autodesktop}\WinTweakStudio"; Filename: "{app}\WinTweakStudio.exe"; Tasks: desktopicon
+Name: "{group}\WinTweakStudio"; Filename: "{app}\WinTweakStudio.exe"; WorkingDir: "{app}"
+Name: "{autodesktop}\WinTweakStudio"; Filename: "{app}\WinTweakStudio.exe"; WorkingDir: "{app}"; Tasks: desktopicon
 
 [Run]
 Filename: "{app}\WinTweakStudio.exe"; Description: "{cm:LaunchProgram,WinTweakStudio}"; Flags: nowait postinstall skipifsilent

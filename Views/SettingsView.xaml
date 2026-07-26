@@ -55,6 +55,26 @@
                             </StackPanel>
                             <CheckBox Grid.Column="1" IsChecked="{Binding AutoCreateRestorePoint}" VerticalAlignment="Center"/>
                         </Grid>
+
+                        <Separator Background="#2A2A42" Margin="0,12"/>
+
+                        <!-- Discord Rich Presence (RPC) -->
+                        <Grid Margin="0,8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="Aktifkan Discord Rich Presence (RPC)" Foreground="#F8F9FA" FontSize="14" FontWeight="SemiBold"/>
+                                    <Border Background="#5865F2" CornerRadius="4" Padding="6,2" Margin="8,0,0,0">
+                                        <TextBlock Text="Promosi &amp; Status Realtime" Foreground="#FFFFFF" FontSize="10" FontWeight="Bold"/>
+                                    </Border>
+                                </StackPanel>
+                                <TextBlock Text="Menampilkan status optimasi PC Anda, info module aktif, serta tombol tautan download &amp; server komunitas langsung di profil Discord." Foreground="#9CA3AF" FontSize="12" Margin="0,4,0,0" TextWrapping="Wrap"/>
+                            </StackPanel>
+                            <CheckBox Grid.Column="1" IsChecked="{Binding EnableDiscordRpc}" VerticalAlignment="Center"/>
+                        </Grid>
                     </StackPanel>
                 </Border>
 

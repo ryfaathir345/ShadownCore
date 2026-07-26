@@ -1,5 +1,6 @@
 using System.Windows;
 using WinTweakStudio.Data;
+using WinTweakStudio.Services;
 
 namespace WinTweakStudio
 {
@@ -16,6 +17,16 @@ namespace WinTweakStudio
             {
                 MessageBox.Show($"Failed to initialize database: {ex.Message}", "WinTweakStudio Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+
+        protected override void OnExit(ExitEventArgs e)
+        {
+            try
+            {
+                DiscordService.Instance.Shutdown();
+            }
+            catch { }
+            base.OnExit(e);
         }
     }
 }

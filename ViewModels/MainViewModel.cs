@@ -40,20 +40,32 @@ namespace WinTweakStudio.ViewModels
 
             // Default to Dashboard
             CurrentView = DashboardVM;
+
+            // Initialize Discord RPC
+            DiscordService.Instance.Initialize();
+
             CheckAppliedTweaks();
         }
 
         public void CheckAppliedTweaks()
         {
+            int activeCount = 0;
             try
             {
                 var logs = Data.DatabaseInitializer.GetAllTweakLogs();
-                HasAppliedTweaks = System.Linq.Enumerable.Any(logs, l => !l.IsReverted);
+                activeCount = System.Linq.Enumerable.Count(logs, l => !l.IsReverted);
+                HasAppliedTweaks = activeCount > 0;
             }
             catch
             {
                 HasAppliedTweaks = false;
             }
+
+            try
+            {
+                DiscordService.Instance.UpdateOptimizationStats(activeCount, ActiveCategoryName);
+            }
+            catch { }
         }
 
         [RelayCommand]

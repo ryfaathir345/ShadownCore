@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:materialIcons="clr-namespace:Material.Icons.WPF;assembly=Material.Icons.WPF"
         Title="WinTweakStudio - Registration &amp; Activation" 
-        Icon="/Icon/App_Icon.ico"
+        Icon="/Icon/App_Icon.png"
         Height="460" Width="680"
         WindowStartupLocation="CenterScreen"
         ResizeMode="NoResize"

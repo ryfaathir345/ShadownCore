@@ -332,6 +332,15 @@ namespace WinTweakStudio.ViewModels
         {
             if (tweak == null) return;
 
+            if (!LicenseService.Instance.IsVipOrOwner && tweak.IsVipExclusive)
+            {
+                await _dialogService.ShowMessageAsync(
+                    "🔒 FITUR EKSKLUSIF VIP MEMBER",
+                    $"Tweak '{tweak.Name}' (Kategori: {tweak.Category} - {tweak.SubCategory}) adalah fitur eksklusif untuk VIP Member dan Owner.\n\nAkun Free User dibatasi pada ~40% tweak dasar (66 tweak standar). Silakan aktivasi VIP Key untuk membuka seluruh 169+ tweak performa lanjutan dan fitur khusus!"
+                );
+                return;
+            }
+
             // Special Handler: Item 1 Disable Nagle's Algorithm (NET-LAT-01)
             if (tweak.Id == "NET-LAT-01" || tweak.Name.Contains("Nagle", System.StringComparison.OrdinalIgnoreCase))
             {
@@ -510,6 +519,15 @@ namespace WinTweakStudio.ViewModels
         [RelayCommand]
         private async Task RunPingTestAsync()
         {
+            if (!LicenseService.Instance.IsVipOrOwner)
+            {
+                await _dialogService.ShowMessageAsync(
+                    "🔒 FITUR EKSKLUSIF VIP MEMBER",
+                    "Game Server Ping Monitor adalah fitur eksklusif untuk VIP Member dan Owner.\n\nSilakan aktivasi VIP Key Anda untuk menguji latency real-time ke server game dan cloud utama!"
+                );
+                return;
+            }
+
             if (IsPinging) return;
             IsPinging = true;
 

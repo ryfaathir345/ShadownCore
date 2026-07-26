@@ -166,6 +166,15 @@ namespace WinTweakStudio.ViewModels
         [RelayCommand]
         private async Task ToggleGameModeAsync()
         {
+            if (!_profileService.IsGameModeActive && !LicenseService.Instance.IsVipOrOwner)
+            {
+                await _dialogService.ShowMessageAsync(
+                    "🔒 FITUR EKSKLUSIF VIP MEMBER",
+                    "One-Click Game Mode adalah fitur eksklusif untuk VIP Member dan Owner.\n\nFitur ini secara otomatis mematikan proses background berat, membersihkan standby memory, dan mengaktifkan mode prioritas tinggi GPU/CPU. Silakan aktivasi VIP Key untuk menggunakan fitur ini!"
+                );
+                return;
+            }
+
             if (_profileService.IsGameModeActive)
             {
                 bool success = await _profileService.DisableGameModeAsync();
@@ -188,6 +197,15 @@ namespace WinTweakStudio.ViewModels
         [RelayCommand]
         private async Task SelectProfileAsync(string profileName)
         {
+            if (!string.Equals(profileName, "Standard", StringComparison.OrdinalIgnoreCase) && !LicenseService.Instance.IsVipOrOwner)
+            {
+                await _dialogService.ShowMessageAsync(
+                    "🔒 FITUR EKSKLUSIF VIP MEMBER",
+                    $"Profil Performa '{profileName}' adalah fitur eksklusif untuk VIP Member dan Owner.\n\nAkun Free User hanya dapat menggunakan profil Standard (Default). Silakan aktivasi VIP Key untuk membuka seluruh profil optimasi!"
+                );
+                return;
+            }
+
             if (Enum.TryParse<PerformanceProfile>(profileName, out var profile))
             {
                 await _profileService.ApplyProfileAsync(profile);
@@ -199,6 +217,15 @@ namespace WinTweakStudio.ViewModels
         [RelayCommand]
         private async Task RunFullSystemFixAsync()
         {
+            if (!LicenseService.Instance.IsVipOrOwner)
+            {
+                await _dialogService.ShowMessageAsync(
+                    "🔒 FITUR EKSKLUSIF VIP MEMBER",
+                    "Full System Troubleshoot & Fix adalah fitur eksklusif untuk VIP Member dan Owner.\n\nSilakan aktivasi VIP Key untuk melakukan perbaikan otomatis pada jaringan, DNS, Winsock, dan Windows Update!"
+                );
+                return;
+            }
+
             bool success = await _troubleshootService.PerformFullSystemFixAsync();
             if (success)
             {
@@ -227,6 +254,15 @@ namespace WinTweakStudio.ViewModels
         [RelayCommand]
         private async Task ClearStandbyMemoryAsync()
         {
+            if (!LicenseService.Instance.IsVipOrOwner)
+            {
+                await _dialogService.ShowMessageAsync(
+                    "🔒 FITUR EKSKLUSIF VIP MEMBER",
+                    "Standby Memory Cleaner adalah fitur eksklusif untuk VIP Member dan Owner.\n\nSilakan aktivasi VIP Key untuk membebaskan alokasi RAM cache secara instan!"
+                );
+                return;
+            }
+
             bool result = _tweakService.ClearStandbyMemory();
             if (result)
             {

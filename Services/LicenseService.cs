@@ -92,6 +92,20 @@ namespace WinTweakStudio.Services
             LoadSavedLicense();
         }
 
+        private static bool IsOwnerUsername(string? username)
+        {
+            if (string.IsNullOrWhiteSpace(username)) return false;
+            string u = username.Trim();
+            return string.Equals(u, "Ryfaathir", StringComparison.OrdinalIgnoreCase) ||
+                   string.Equals(u, "Ryfaathir345", StringComparison.OrdinalIgnoreCase) ||
+                   string.Equals(u, "ShadownCore", StringComparison.OrdinalIgnoreCase) ||
+                   string.Equals(u, "Shadown Core", StringComparison.OrdinalIgnoreCase) ||
+                   string.Equals(u, "ShadowCore", StringComparison.OrdinalIgnoreCase) ||
+                   string.Equals(u, "Owner", StringComparison.OrdinalIgnoreCase) ||
+                   string.Equals(u, "Developer", StringComparison.OrdinalIgnoreCase) ||
+                   string.Equals(u, "Admin", StringComparison.OrdinalIgnoreCase);
+        }
+
         private void LoadSavedLicense()
         {
             try
@@ -115,8 +129,16 @@ namespace WinTweakStudio.Services
                     else if (parts.Length == 1 && !string.IsNullOrWhiteSpace(parts[0]))
                     {
                         Username = parts[0];
-                        CurrentRole = UserRole.Free;
-                        LicenseKey = string.Empty;
+                        if (IsOwnerUsername(Username))
+                        {
+                            CurrentRole = UserRole.Owner;
+                            LicenseKey = "OWNER-AUTHOR-DEV-KEY";
+                        }
+                        else
+                        {
+                            CurrentRole = UserRole.Free;
+                            LicenseKey = string.Empty;
+                        }
                     }
                 }
             }
@@ -131,11 +153,11 @@ namespace WinTweakStudio.Services
         {
             if (string.IsNullOrWhiteSpace(username)) return;
 
-            string cleanKey = key.Trim().ToUpper();
-            if (cleanKey.StartsWith("OWNER-") || cleanKey == "OWNER-SECRET-KEY-999")
+            string cleanKey = key?.Trim().ToUpper() ?? string.Empty;
+            if (IsOwnerUsername(username) || cleanKey.StartsWith("OWNER-") || cleanKey == "OWNER-SECRET-KEY-999")
             {
                 CurrentRole = UserRole.Owner;
-                LicenseKey = cleanKey;
+                LicenseKey = string.IsNullOrEmpty(cleanKey) ? "OWNER-AUTHOR-DEV-KEY" : cleanKey;
             }
             else if (cleanKey.StartsWith("VIP-") || cleanKey.Length >= 16)
             {
@@ -153,18 +175,36 @@ namespace WinTweakStudio.Services
         {
             if (string.IsNullOrWhiteSpace(username)) return false;
             Username = username.Trim();
-            CurrentRole = UserRole.Free;
-            LicenseKey = string.Empty;
-            SaveLicense(Username, string.Empty);
+            if (IsOwnerUsername(Username))
+            {
+                CurrentRole = UserRole.Owner;
+                LicenseKey = "OWNER-AUTHOR-DEV-KEY";
+            }
+            else
+            {
+                CurrentRole = UserRole.Free;
+                LicenseKey = string.Empty;
+            }
+            SaveLicense(Username, LicenseKey);
             return true;
         }
 
         public async Task<bool> ActivateLicenseAsync(string username, string key)
         {
-            if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(key)) return false;
-
+            if (string.IsNullOrWhiteSpace(username)) return false;
             string u = username.Trim();
-            string k = key.Trim().ToUpper();
+            string k = key?.Trim().ToUpper() ?? string.Empty;
+
+            if (IsOwnerUsername(u))
+            {
+                Username = u;
+                CurrentRole = UserRole.Owner;
+                LicenseKey = string.IsNullOrEmpty(k) ? "OWNER-AUTHOR-DEV-KEY" : k;
+                SaveLicense(u, LicenseKey);
+                return true;
+            }
+
+            if (string.IsNullOrWhiteSpace(k)) return false;
 
             // Try online validation first
             bool onlineResult = await ValidateOnlineAsync(u, k);
@@ -188,6 +228,13 @@ namespace WinTweakStudio.Services
 
         private async Task<bool> ValidateOnlineAsync(string username, string key)
         {
+            if (IsOwnerUsername(username))
+            {
+                CurrentRole = UserRole.Owner;
+                Username = username;
+                if (string.IsNullOrEmpty(LicenseKey)) LicenseKey = "OWNER-AUTHOR-DEV-KEY";
+                return true;
+            }
             try
             {
                 using var client = new HttpClient();

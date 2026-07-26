@@ -22,6 +22,25 @@ namespace WinTweakStudio.ViewModels
         private bool _autoCreateRestorePoint = true;
 
         [ObservableProperty]
+        private bool _enableDiscordRpc = true;
+
+        partial void OnEnableDiscordRpcChanged(bool value)
+        {
+            DiscordService.Instance.IsEnabled = value;
+            if (value)
+            {
+                try
+                {
+                    if (System.Windows.Application.Current.MainWindow?.DataContext is MainViewModel mainVm)
+                    {
+                        mainVm.CheckAppliedTweaks();
+                    }
+                }
+                catch { }
+            }
+        }
+
+        [ObservableProperty]
         private int _monitoringRefreshInterval = 2; // Default 2 seconds
 
         [ObservableProperty]

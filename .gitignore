@@ -69,3 +69,8 @@ TestResults/
 *.tmp
 *.temp
 ~$*
+
+# ─── Installers & Binaries ──────────────────────────────────
+*.exe
+*.msi
+Installer/*.exe

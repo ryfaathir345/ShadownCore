@@ -62,7 +62,16 @@ namespace WinTweakStudio.Views
                 return;
             }
 
-            if (string.IsNullOrEmpty(key))
+            bool isOwner = string.Equals(username, "Ryfaathir", StringComparison.OrdinalIgnoreCase) ||
+                           string.Equals(username, "Ryfaathir345", StringComparison.OrdinalIgnoreCase) ||
+                           string.Equals(username, "ShadownCore", StringComparison.OrdinalIgnoreCase) ||
+                           string.Equals(username, "Shadown Core", StringComparison.OrdinalIgnoreCase) ||
+                           string.Equals(username, "ShadowCore", StringComparison.OrdinalIgnoreCase) ||
+                           string.Equals(username, "Owner", StringComparison.OrdinalIgnoreCase) ||
+                           string.Equals(username, "Developer", StringComparison.OrdinalIgnoreCase) ||
+                           string.Equals(username, "Admin", StringComparison.OrdinalIgnoreCase);
+
+            if (string.IsNullOrEmpty(key) && !isOwner)
             {
                 ShowError("Silakan masukkan VIP Activation Key Anda.");
                 return;
